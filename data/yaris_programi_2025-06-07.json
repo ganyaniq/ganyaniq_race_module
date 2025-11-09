@@ -1,0 +1,46 @@
+{
+    "tarih": "2025-06-07",
+    "sehir": "İstanbul",
+    "kosular": [
+        {
+            "kosu_id": 875321,
+            "saat": "14:30",
+            "pist": "Çim",
+            "mesafe": "1400",
+            "at_sayisi": 9,
+            "siralama": [],
+            "atlar": [
+                {
+                    "isim": "YILDIRIM",
+                    "jokey": "A.ÇELİK",
+                    "agf": 22.5
+                },
+                {
+                    "isim": "GÜNEŞİN KIZI",
+                    "jokey": "H.ÇİZİK",
+                    "agf": 18.7
+                }
+            ]
+        },
+        {
+            "kosu_id": 875322,
+            "saat": "15:00",
+            "pist": "Kum",
+            "mesafe": "1600",
+            "at_sayisi": 8,
+            "siralama": [],
+            "atlar": [
+                {
+                    "isim": "KARAŞİMŞEK",
+                    "jokey": "M.GÜNDÜZELİ",
+                    "agf": 14.3
+                },
+                {
+                    "isim": "RÜZGARIN OĞLU",
+                    "jokey": "Ö.YILDIRIM",
+                    "agf": 12.1
+                }
+            ]
+        }
+    ]
+}

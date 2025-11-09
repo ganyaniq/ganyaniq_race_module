@@ -1,0 +1,30 @@
+{
+    "tarih": "2025-06-07",
+    "sehir": "İstanbul",
+    "kosular": [
+        {
+            "kosu_id": 875321,
+            "kazanan": "YILDIRIM",
+            "ikincilik": "GÜNEŞİN KIZI",
+            "ucunculuk": "YOK",
+            "sure": "1:24.35",
+            "ganyan": 3.75,
+            "agirliklar": {
+                "YILDIRIM": "55.5",
+                "GÜNEŞİN KIZI": "56"
+            }
+        },
+        {
+            "kosu_id": 875322,
+            "kazanan": "KARAŞİMŞEK",
+            "ikincilik": "RÜZGARIN OĞLU",
+            "ucunculuk": "YOK",
+            "sure": "1:36.90",
+            "ganyan": 4.2,
+            "agirliklar": {
+                "KARAŞİMŞEK": "54",
+                "RÜZGARIN OĞLU": "55"
+            }
+        }
+    ]
+}
