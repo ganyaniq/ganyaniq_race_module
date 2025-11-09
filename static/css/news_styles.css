@@ -1,0 +1,43 @@
+/* static/css/news_styles.css */
+
+body {
+  background-color: #000;
+  color: #ccc;
+  font-family: 'Arial', sans-serif;
+}
+
+.haberler-listesi {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.haber-karti {
+  background-color: #111;
+  border: 1px solid #444;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.haber-resmi {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+}
+
+.haber-icerik {
+  padding: 1rem;
+}
+
+.haber-icerik h2 {
+  color: #f0c001;
+  margin-top: 0;
+}
+
+.haber-tarih {
+  font-size: 0.85rem;
+  color: #888;
+}

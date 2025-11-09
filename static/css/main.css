@@ -1,0 +1,35 @@
+body {
+  font-family: 'Open Sans', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+header, footer {
+  background-color: #222;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+}
+
+h1 {
+  margin-top: 20px;
+}
+
+.kategori-item, .alt-kategori-item {
+  background: white;
+  margin: 10px 20px;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.kategori-item a, .alt-kategori-item a {
+  text-decoration: none;
+  font-weight: bold;
+  color: #007bff;
+}
+
+.kategori-item p, .alt-kategori-item p {
+  margin: 5px 0 0 0;
+}

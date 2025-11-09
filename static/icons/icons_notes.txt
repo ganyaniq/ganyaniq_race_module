@@ -1,0 +1,7 @@
+
+/static/icons/ klasöründe SVG formatında bulunacaklar:
+- instagram.svg
+- twitter.svg
+- tiktok.svg
+- youtube.svg
+Tüm ikonlar <footer> bölümünde linklenmiştir.
