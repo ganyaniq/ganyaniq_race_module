@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Haber Düzenleme - GANYAN IQ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/static/css/main.css" />
+</head>
+<body>
+  <h1>Haberler Yönetimi</h1>
+  <div id="haber-listesi"></div>
+
+  <script>
+    async function listele() {
+      const res = await fetch('/admin/haberler/');
+      const haberler = await res.json();
+      const container = document.getElementById('haber-listesi');
+      container.innerHTML = '';
+      haberler.forEach(haber => {
+        const div = document.createElement('div');
+        div.innerHTML = `
+          <h3 contenteditable="true" data-id="${haber.id}" class="editable-title">${haber.title}</h3>
+          <p contenteditable="true" data-id="${haber.id}" class="editable-content">${haber.content}</p>
+          <button onclick="guncelle(${haber.id})">Kaydet</button>
+          <button onclick="sil(${haber.id})">Sil</button>
+          <hr/>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    async function guncelle(id) {
+      const titleEl = document.querySelector(`.editable-title[data-id='${id}']`);
+      const contentEl = document.querySelector(`.editable-content[data-id='${id}']`);
+
+      const haber = {
+        id: id,
+        title: titleEl.textContent.trim(),
+        content: contentEl.textContent.trim(),
+        is_manual: true,
+        is_active: true
+      };
+
+      const res = await fetch(`/admin/haberler/${id}`, {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(haber)
+      });
+      if (res.ok) {
+        alert('Haber güncellendi');
+      } else {
+        alert('Güncelleme başarısız');
+      }
+      listele();
+    }
+
+    async function sil(id) {
+      const res = await fetch(`/admin/haberler/${id}`, {method: 'DELETE'});
+      if (res.ok) {
+        alert('Haber pasif yapıldı');
+      } else {
+        alert('Silme işlemi başarısız');
+      }
+      listele();
+    }
+
+    listele();
+  </script>
+</body>
+</html>

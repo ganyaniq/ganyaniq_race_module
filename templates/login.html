@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>GANYAN IQ Admin Girişi</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 50px; }
+  form { max-width: 300px; margin: auto; }
+  input { width: 100%; padding: 10px; margin: 10px 0; }
+  button { width: 100%; padding: 10px; }
+  #error-msg { color: red; }
+</style>
+</head>
+<body>
+
+<h2>Admin Girişi</h2>
+
+<form id="login-form">
+  <input type="text" id="username" placeholder="Kullanıcı Adı" required />
+  <input type="password" id="password" placeholder="Şifre" required />
+  <button type="submit">Giriş Yap</button>
+  <div id="error-msg"></div>
+</form>
+
+<script>
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+
+  const params = new URLSearchParams();
+  params.append('username', username);
+  params.append('password', password);
+
+  const res = await fetch('/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: params
+  });
+
+  if (res.ok) {
+    const data = await res.json();
+    localStorage.setItem('access_token', data.access_token);
+    window.location.href = '/admin'; // Admin panel sayfası
+  } else {
+    document.getElementById('error-msg').textContent = 'Kullanıcı adı veya şifre hatalı.';
+  }
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,13 @@
+<!-- haber_duzenle.html -->
+<h2>Haberi Düzenle</h2>
+<form method="POST" action="/admin/haber_duzenle/{{ haber.id }}">
+  <label>Başlık</label>
+  <input type="text" name="baslik" value="{{ haber.baslik }}" required><br>
+  <label>İçerik</label><br>
+  <textarea name="icerik" rows="10" cols="80">{{ haber.icerik }}</textarea><br>
+  <label>Kategori</label>
+  <input type="text" name="kategori" value="{{ haber.kategori }}"><br>
+  <label>Resim URL</label>
+  <input type="text" name="resim_url" value="{{ haber.resim_url }}"><br>
+  <button type="submit">Güncelle</button>
+</form>

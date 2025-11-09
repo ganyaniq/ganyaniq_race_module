@@ -1,0 +1,59 @@
+# alfonso_detail.html içine içgörü grafik kartları ve açıklama bölümü yerleştireceğiz
+
+alfonso_detail_path = "/mnt/data/validated_ganyaniq_race_module/ganyaniq_race_module/templates/alfonso_detail.html"
+
+# Basit ve şık bir içgörü paneli HTML içeriği:
+alfonso_html_content = """
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Alfonso İçgörü Paneli</title>
+    <link rel="stylesheet" href="/static/styles/main.css">
+    <style>
+        .grafik-kart {
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 20px 0;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            background-color: #fff;
+        }
+        .grafik-kart img {
+            width: 100%;
+            max-width: 600px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        .grafik-kart h3 {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+            color: #222;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏇 Alfonso Tahmin Paneli</h1>
+
+        <div class="grafik-kart">
+            <h3>1. Koşu - İçgörü Analizi</h3>
+            <p>Alfonso, 1. koşuda 2 numaralı safkanı önermektedir. Bu öneri, geçmiş başarı oranlarına ve destek yüzdesine dayanmaktadır.</p>
+            <img src="/static/images/alfonso_icgoru_analiz.png" alt="İçgörü Analizi">
+        </div>
+
+        <div class="grafik-kart">
+            <h3>1. Koşu - Geçmiş Başarı Grafiği</h3>
+            <p>Bu grafik, Alfonso'nun benzer koşullarda yaptığı geçmiş tahminlerin doğruluk performansını göstermektedir.</p>
+            <img src="/static/images/alfonso_safkan_basarisi.png" alt="Başarı Grafiği">
+        </div>
+    </div>
+</body>
+</html>
+"""
+
+# HTML dosyasını yaz
+with open(alfonso_detail_path, "w", encoding="utf-8") as f:
+    f.write(alfonso_html_content)
+
+alfonso_detail_path

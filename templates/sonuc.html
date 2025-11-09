@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>GANYAN IQ | Yarış Sonuçları</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    {% include 'partials/header.html' %}
+
+    <main>
+        <h1>Günün Yarış Sonuçları</h1>
+        <div class="sonuc-list">
+            {% for sonuc in sonuclar %}
+                <div class="sonuc-item">
+                    <h2>{{ sonuc.sehir }} - {{ sonuc.hipodrom }}</h2>
+                    <p>Tarih: {{ sonuc.tarih }}</p>
+                    <ul>
+                        {% for kosu in sonuc.kosular %}
+                            <li>
+                                <strong>{{ kosu.kosu_no }}. Koşu:</strong> Kazanan: {{ kosu.kazanan }} - Ganyan: {{ kosu.ganyan }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+        </div>
+    </main>
+
+    {% include 'partials/footer.html' %}
+</body>
+</html>

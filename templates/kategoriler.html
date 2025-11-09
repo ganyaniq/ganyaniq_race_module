@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kategoriler - GANYAN IQ</title>
+    <meta name="description" content="GANYAN IQ kategoriler sayfası. Yarışlar, atlar, analizler ve daha fazlası burada." />
+    <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+    <header>
+        <h1>Kategoriler</h1>
+        <nav>
+            <ul>
+                {% for kategori in kategoriler %}
+                <li><a href="/kategori/{{ kategori.slug }}">{{ kategori.ad }}</a></li>
+                {% endfor %}
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2>Tüm Kategoriler</h2>
+            <div class="kategori-listesi">
+                {% for kategori in kategoriler %}
+                <article class="kategori-karti">
+                    <h3><a href="/kategori/{{ kategori.slug }}">{{ kategori.ad }}</a></h3>
+                    <p>{{ kategori.aciklama }}</p>
+                </article>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 GANYAN IQ</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>GANYAN IQ - Admin Paneli</title>
+    <script src="/static/js/admin_logic.js" defer></script>
+</head>
+<body>
+    <h1>Admin Panel</h1>
+
+    <section>
+        <h2>CSV Yükleme</h2>
+        <form id="csvForm" enctype="multipart/form-data">
+            <input type="file" name="csv_file" accept=".csv" required>
+            <button type="submit">Yükle</button>
+        </form>
+    </section>
+
+    <section>
+        <h2>Alfonso AI Eğitimi</h2>
+        <button id="trainAlfonso">Alfonso'yu Eğit</button>
+    </section>
+
+    <section>
+        <h2>Logları Görüntüle</h2>
+        <button id="viewLogs">Logları Getir</button>
+        <pre id="logOutput"></pre>
+    </section>
+
+    <section>
+        <h2>Haber Ekle</h2>
+        <form id="haberForm">
+            <input type="text" name="title" placeholder="Başlık" required><br>
+            <textarea name="content" placeholder="İçerik" required></textarea><br>
+            <button type="submit">Haberi Ekle</button>
+        </form>
+    </section>
+
+    <section>
+        <h2>Banner Ekle</h2>
+        <form id="bannerForm" enctype="multipart/form-data">
+            <input type="file" name="banner" accept="image/*" required><br>
+            <input type="text" name="link" placeholder="Yönlendirme Linki" required><br>
+            <label><input type="checkbox" name="active" checked> Aktif</label><br>
+            <button type="submit">Banner Kaydet</button>
+        </form>
+    </section>
+</body>
+</html>

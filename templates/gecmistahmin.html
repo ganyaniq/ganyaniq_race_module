@@ -1,0 +1,73 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>GanyanIQ | Geçmiş Tahminler</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f9f9fb; }
+        h2 { text-align: center; color: #2c3e50; }
+        .tahmin-blok {
+            background: #fff;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px auto;
+            width: 90%;
+            max-width: 750px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .tahmin-blok h3 {
+            margin-top: 0;
+            color: #2980b9;
+        }
+        .kosu {
+            margin-bottom: 10px;
+            padding-left: 10px;
+        }
+        .at {
+            font-size: 1.05em;
+            padding: 3px 0;
+        }
+        .etiket {
+            font-size: 0.9em;
+            padding: 2px 8px;
+            border-radius: 5px;
+            color: #fff;
+            margin-left: 8px;
+        }
+        .favori { background-color: #27ae60; }
+        .surpriz { background-color: #e74c3c; }
+        .normal { background-color: #3498db; }
+    </style>
+</head>
+<body>
+    <h2>📜 Alfonso AI | Geçmiş Tahminler</h2>
+
+    {% if gecmisler %}
+        {% for gun in gecmisler %}
+        <div class="tahmin-blok">
+            <h3>{{ gun.tarih }}</h3>
+            {% for kosu in gun.kosular %}
+                <div class="kosu">
+                    <strong>{{ loop.index }}. Koşu</strong><br>
+                    {% for at in kosu.tahmin %}
+                        <div class="at">
+                            {{ at.sira }} - {{ at.isim }} (Oran: {{ at.oran }})
+                            {% if at.sira == 1 %}
+                                <span class="etiket favori">Favori</span>
+                            {% elif at.sira >= 4 %}
+                                <span class="etiket surpriz">Sürpriz</span>
+                            {% else %}
+                                <span class="etiket normal">İddialı</span>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    {% else %}
+        <p style="text-align:center;">Henüz geçmiş tahmin bulunamadı.</p>
+    {% endif %}
+</body>
+</html>

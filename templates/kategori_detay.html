@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ kategori.ad }} - GANYAN IQ</title>
+    <meta name="description" content="{{ kategori.aciklama }}" />
+    <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+    <header>
+        <h1>{{ kategori.ad }}</h1>
+        <nav>
+            <a href="/kategoriler">Tüm Kategoriler</a>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2>Haberler & Analizler</h2>
+            {% if haberler %}
+                {% for haber in haberler %}
+                <article class="haber-karti">
+                    <h3><a href="/haber/{{ haber.slug }}">{{ haber.baslik }}</a></h3>
+                    <p>{{ haber.ozet }}</p>
+                </article>
+                {% endfor %}
+            {% else %}
+                <p>Bu kategoride henüz haber yok.</p>
+            {% endif %}
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 GANYAN IQ</p>
+    </footer>
+</body>
+</html>
