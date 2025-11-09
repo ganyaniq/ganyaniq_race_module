@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+databases
+jinja2
+python-multipart
+requests
+pydantic
+python-jose
+scikit-learn
+pandas
