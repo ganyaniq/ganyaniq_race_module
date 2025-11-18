@@ -41,9 +41,12 @@ async def results_lite(day: str | None = None):
     day_iso = _d2iso(day)
     
     # Try database first
-    db_data = await db_service.get_race_results(day_iso)
-    if db_data and "results" in db_data:
-        return {"day": day_iso, "rows": db_data["results"]}
+    try:
+        db_data = await db_service.get_race_results(day_iso)
+        if db_data and "results" in db_data:
+            return {"day": day_iso, "rows": db_data["results"]}
+    except Exception as e:
+        print(f"[API] Database error: {e}")
     
     # Fallback to sample data
     sample_data = read_json("sample_results.json", [])
