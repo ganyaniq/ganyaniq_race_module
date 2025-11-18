@@ -76,11 +76,15 @@ class TJKRealScraper:
             target_date = date.today()
         
         try:
+            # Session al (ana sayfadan)
+            session = self._get_session()
+            
+            # Alt sayfaya git
             url = f"{self.base_url}/TR/YarisSever/Query/Page/GunlukYarisSonuclari"
             
             logger.info(f"[TJK Real] Fetching results for {target_date}")
             
-            response = requests.get(url, headers=self.headers, timeout=10)
+            response = session.get(url, timeout=10)
             
             if response.status_code == 200:
                 results = self._parse_results(response.text, target_date)
