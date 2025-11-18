@@ -68,7 +68,11 @@ export default function Index() {
           <Text style={styles.statLabel}>Günlük Yarış</Text>
         </View>
         <View style={styles.statCard}>
-          <Text style={[styles.statNumber, {color: '#3b82f6'}]}>{predictions.length}</Text>
+          <Text style={[styles.statNumber, {color: '#3b82f6'}]}>5</Text>
+          <Text style={styles.statLabel}>AI Karakter</Text>
+        </View>
+        <View style={styles.statCard}>
+          <Text style={[styles.statNumber, {color: '#10b981'}]}>{predictions.length + mickSurprises.length}</Text>
           <Text style={styles.statLabel}>AI Tahmini</Text>
         </View>
       </View>
