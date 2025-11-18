@@ -8,12 +8,31 @@ from contextlib import asynccontextmanager
 from app.routers.api import router as api_router
 from app.services.db_service import db_service
 from app.config import ROOT_DIR
+from app.libs.scheduler import Job, start_jobs
+from app.scrapers.scraper_jobs import run_daily_program_scraper, run_daily_results_scraper
+
+# Configure background jobs
+SCRAPER_JOBS = [
+    # Run program scraper every 2 hours (7200 seconds)
+    Job("daily_program", 7200, run_daily_program_scraper),
+    # Run results scraper every 5 minutes (300 seconds)
+    Job("daily_results", 300, run_daily_results_scraper),
+]
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Lifespan events for startup and shutdown"""
     # Startup
     await db_service.connect()
+    
+    # Start background scraper jobs
+    start_jobs(SCRAPER_JOBS)
+    print("[App] Started background scraper jobs")
+    
+    # Run initial scrape
+    print("[App] Running initial data scrape...")
+    run_daily_program_scraper()
+    
     print("[App] Ganyaniq Backend started successfully!")
     
     yield
