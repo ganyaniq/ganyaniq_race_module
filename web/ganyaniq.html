@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GANYAN IQ - At Yarışları Tahmin Platformu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #0b0f14; color: #e8eefb; font-family: system-ui; }
+        .card { background: rgba(18,24,34,0.7); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; }
+        .race-card { transition: transform 0.2s; }
+        .race-card:hover { transform: translateY(-4px); }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-bold text-yellow-400 mb-2">🏇 GANYAN IQ</h1>
+            <p class="text-gray-400 text-lg">At Yarışları AI Tahmin Platformu</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="card p-6 text-center">
+                <div class="text-4xl font-bold text-green-400" id="raceCount">-</div>
+                <div class="text-gray-400 mt-2">Günlük Yarış</div>
+            </div>
+            <div class="card p-6 text-center">
+                <div class="text-4xl font-bold text-blue-400" id="predictionCount">-</div>
+                <div class="text-gray-400 mt-2">AI Tahmini</div>
+            </div>
+            <div class="card p-6 text-center">
+                <div class="text-4xl font-bold text-yellow-400">Alfonso</div>
+                <div class="text-gray-400 mt-2">AI Uzman</div>
+            </div>
+        </div>
+
+        <!-- Race Program -->
+        <div class="card p-8 mb-8">
+            <h2 class="text-2xl font-bold text-yellow-400 mb-6">📋 Günlük Yarış Programı</h2>
+            <div id="programList" class="space-y-4"></div>
+        </div>
+
+        <!-- Alfonso AI Predictions -->
+        <div class="card p-8 mb-8">
+            <h2 class="text-2xl font-bold text-yellow-400 mb-6">🤖 Alfonso AI Tahminleri</h2>
+            <div id="predictionList" class="space-y-6"></div>
+        </div>
+
+        <!-- Results -->
+        <div class="card p-8">
+            <h2 class="text-2xl font-bold text-yellow-400 mb-6">🏆 Yarış Sonuçları</h2>
+            <div id="resultsList" class="space-y-4"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+        const today = new Date().toISOString().split('T')[0];
+
+        async function loadProgram() {
+            try {
+                const res = await fetch(`${API_BASE}/api/program-lite?day=${today}`);
+                const data = await res.json();
+                document.getElementById('raceCount').textContent = data.rows.length;
+                
+                const html = data.rows.map(race => `
+                    <div class="race-card p-4 bg-gray-800 bg-opacity-30 rounded-lg border border-gray-700">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="text-yellow-400 font-bold text-lg">${race.hippodrome}</span>
+                                <span class="text-gray-400 mx-2">•</span>
+                                <span class="text-gray-300">Koşu ${race.race_no}</span>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm text-gray-400">${race.distance} • ${race.type}</div>
+                                <div class="text-sm text-green-400">${race.start_time}</div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                document.getElementById('programList').innerHTML = html;
+            } catch (err) {
+                document.getElementById('programList').innerHTML = '<p class="text-red-400">Veri yüklenemedi</p>';
+            }
+        }
+
+        async function loadPredictions() {
+            try {
+                const res = await fetch(`${API_BASE}/api/predictions?day=${today}`);
+                const data = await res.json();
+                document.getElementById('predictionCount').textContent = data.predictions.length;
+                
+                const html = data.predictions.map(pred => `
+                    <div class="card p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-yellow-400">${pred.race_info.hippodrome} - Koşu ${pred.race_info.race_no}</h3>
+                                <p class="text-sm text-gray-400">${pred.model}</p>
+                            </div>
+                            <span class="px-3 py-1 bg-green-500 bg-opacity-20 text-green-400 rounded-full text-sm">
+                                ${pred.confidence_level}
+                            </span>
+                        </div>
+                        
+                        <div class="space-y-3 mb-4">
+                            ${pred.predictions.map((p, i) => `
+                                <div class="flex items-center p-3 bg-gray-800 bg-opacity-40 rounded-lg">
+                                    <div class="w-12 h-12 rounded-full bg-yellow-400 text-gray-900 flex items-center justify-center font-bold text-xl mr-4">
+                                        ${p.horse_number}
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="flex items-center justify-between mb-1">
+                                            <span class="font-semibold">${i === 0 ? '🥇' : i === 1 ? '🥈' : '🥉'} ${i + 1}. Tercih</span>
+                                            <span class="text-green-400 font-bold">%${p.confidence}</span>
+                                        </div>
+                                        <p class="text-sm text-gray-400">${p.reason}</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="p-4 bg-blue-500 bg-opacity-10 rounded-lg border border-blue-500 border-opacity-30">
+                            <p class="text-sm text-gray-300">${pred.analysis}</p>
+                        </div>
+                    </div>
+                `).join('');
+                
+                document.getElementById('predictionList').innerHTML = html || '<p class="text-gray-400">Henüz tahmin oluşturulmadı</p>';
+            } catch (err) {
+                document.getElementById('predictionList').innerHTML = '<p class="text-red-400">Tahminler yüklenemedi</p>';
+            }
+        }
+
+        async function loadResults() {
+            try {
+                const res = await fetch(`${API_BASE}/api/results-lite?day=${today}`);
+                const data = await res.json();
+                
+                const html = data.rows.map(result => `
+                    <div class="p-4 bg-gray-800 bg-opacity-30 rounded-lg border border-gray-700">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="text-yellow-400 font-bold">${result.hippodrome}</span>
+                                <span class="text-gray-400 mx-2">•</span>
+                                <span class="text-gray-300">Koşu ${result.race_no}</span>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="text-right">
+                                    <div class="text-sm text-gray-400">1. ${result.first} • 2. ${result.second}</div>
+                                    <div class="text-sm text-green-400 font-bold">Ganyan: ${result.ganyan} TL</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                document.getElementById('resultsList').innerHTML = html;
+            } catch (err) {
+                document.getElementById('resultsList').innerHTML = '<p class="text-gray-400">Henüz sonuç yok</p>';
+            }
+        }
+
+        // Load data on page load
+        loadProgram();
+        loadPredictions();
+        loadResults();
+
+        // Auto refresh every 30 seconds
+        setInterval(() => {
+            loadProgram();
+            loadResults();
+        }, 30000);
+    </script>
+</body>
+</html>
