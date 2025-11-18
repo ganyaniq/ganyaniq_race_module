@@ -9,8 +9,10 @@ import openai
 logger = logging.getLogger(__name__)
 
 # Use Emergent LLM Key
-EMERGENT_LLM_KEY = "sk-emergent-cAa9a231b85044c413"
+import os
+EMERGENT_LLM_KEY = os.getenv("EMERGENT_LLM_KEY", "sk-emergent-cAa9a231b85044c413")
 openai.api_key = EMERGENT_LLM_KEY
+openai.api_base = "https://api.openai.com/v1"
 
 class AlfonsoAI:
     """
