@@ -52,6 +52,10 @@ if web_dir.exists():
             return FileResponse(str(index_path))
         return {"message": "Ganyaniq Backend - Web UI not found"}
 
+@app.get("/health")
+async def health_root():
+    return {"ok": True, "status": "healthy"}
+
 @app.get("/api/health")
 async def health():
     return {"ok": True, "status": "healthy"}
