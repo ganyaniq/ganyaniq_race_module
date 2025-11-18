@@ -4,15 +4,13 @@ import json
 import os
 from typing import List, Dict, Any, Optional
 from datetime import date
-import openai
+from emergentintegrations.llm.chat import LlmChat, UserMessage
+from dotenv import load_dotenv
 
+load_dotenv()
 logger = logging.getLogger(__name__)
 
-# Use Emergent LLM Key
-import os
 EMERGENT_LLM_KEY = os.getenv("EMERGENT_LLM_KEY", "sk-emergent-cAa9a231b85044c413")
-openai.api_key = EMERGENT_LLM_KEY
-openai.api_base = "https://api.openai.com/v1"
 
 class AlfonsoAI:
     """
