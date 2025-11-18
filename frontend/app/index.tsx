@@ -8,23 +8,35 @@ export default function Index() {
   const [races, setRaces] = useState([]);
   const [predictions, setPredictions] = useState([]);
   const [results, setResults] = useState([]);
+  const [mickSurprises, setMickSurprises] = useState([]);
+  const [arionInsights, setArionInsights] = useState([]);
+  const [hermesNotifications, setHermesNotifications] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
   const loadData = async () => {
     try {
-      const [programRes, predRes, resultsRes] = await Promise.all([
+      const [programRes, predRes, resultsRes, mickRes, arionRes, hermesRes] = await Promise.all([
         fetch(`${API_BASE}/api/program-lite?day=${today}`),
         fetch(`${API_BASE}/api/predictions?day=${today}`),
-        fetch(`${API_BASE}/api/results-lite?day=${today}`)
+        fetch(`${API_BASE}/api/results-lite?day=${today}`),
+        fetch(`${API_BASE}/api/mick-surprises?day=${today}`),
+        fetch(`${API_BASE}/api/arion-insights?day=${today}`),
+        fetch(`${API_BASE}/api/hermes-notifications`)
       ]);
       
       const programData = await programRes.json();
       const predData = await predRes.json();
       const resultsData = await resultsRes.json();
+      const mickData = await mickRes.json();
+      const arionData = await arionRes.json();
+      const hermesData = await hermesRes.json();
       
       setRaces(programData.rows || []);
       setPredictions(predData.predictions || []);
       setResults(resultsData.rows || []);
+      setMickSurprises(mickData.surprises || []);
+      setArionInsights(arionData.insights || []);
+      setHermesNotifications(hermesData.notifications || []);
     } catch (err) {
       console.error('Data load error:', err);
     }
