@@ -112,20 +112,19 @@ Sadece JSON formatında yanıt ver, başka açıklama ekleme."""
     
     async def _call_llm(self, prompt: str) -> str:
         """
-        Call OpenAI API with Emergent LLM Key
+        Call LLM API with Emergent LLM Key
         """
         try:
-            response = openai.chat.completions.create(
-                model=self.model,
-                messages=[
-                    {"role": "system", "content": "Sen Alfonso, at yarışları tahmin uzmanısın."},
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=0.7,
-                max_tokens=500
-            )
+            chat = LlmChat(
+                api_key=EMERGENT_LLM_KEY,
+                session_id="alfonso-predictions",
+                system_message="Sen Alfonso, Türkiye'deki at yarışları için ganyan tahminleri yapan bir yapay zeka uzmanısın."
+            ).with_model("openai", "gpt-4o-mini")
             
-            return response.choices[0].message.content.strip()
+            user_message = UserMessage(text=prompt)
+            response = await chat.send_message(user_message)
+            
+            return response
             
         except Exception as e:
             logger.error(f"[Alfonso AI] LLM API error: {e}")
