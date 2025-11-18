@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GANYANIQ • Live</title>
+
+  <link rel="icon" href="./static/logo.png">
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/htm@3.1.1/dist/htm.umd.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :root{ --app-bg:#0b0f14; --ink:#e8eefb; --muted:#9db1d2; }
+    body{ background:var(--app-bg); color:var(--ink); margin:0 }
+    .glass{ background:rgba(18,24,34,0.7); border:1px solid rgba(255,255,255,0.06); border-radius:16px; }
+    .divider{ border-color: rgba(255,255,255,0.08) }
+    .page{ display:grid; grid-template-columns: 1fr minmax(980px,1200px) 1fr; }
+    .ad-gutter{ display:flex; justify-content:center; }
+    .ad-slot{ width:160px; height:600px; background:#0003; border-radius:12px; position:sticky; top:16px; overflow:hidden }
+    @media(max-width:1400px){ .ad-gutter{ display:none; } .page{ grid-template-columns: 1fr; } }
+    .warn{ background:#3b1d1d; border:1px solid #7a2e2e; color:#ffdede; border-radius:12px; padding:12px 16px; }
+  </style>
+</head>
+<body>
+<div id="app"></div>
+
+<script type="module">
+const { createElement:h, useEffect, useRef, useState } = React;
+const html = htm.bind(h);
+
+function resolveApiBase(){
+  const saved = localStorage.getItem("GANYANIQ_API");
+  if (saved) return saved;
+  const def = "http://127.0.0.1:10123";
+  localStorage.setItem("GANYANIQ_API", def);
+  return def;
+}
+const API_BASE = resolveApiBase();
+
+function useInterval(fn, delay){
+  const saved = useRef(fn);
+  useEffect(()=>{ saved.current = fn }, [fn]);
+  useEffect(()=>{
+    if (delay == null) return;
+    const id = setInterval(()=> saved.current(), delay);
+    return ()=> clearInterval(id);
+  }, [delay]);
+}
+
+async function fetchJSON(url){ const r = await axios.get(url, { timeout: 8000 }); return r.data; }
+
+function Header({tickerItems, logo}){
+  return html`
+    <header className="border-b border-white/10">
+      <div className="mx-auto max-w-[1200px] px-6 py-3 flex items-center gap-4">
+        <img src="${logo || './static/logo.png'}" alt="logo" style="height:48px"/>
+        <div className="text-2xl font-bold tracking-widest">GANYAN<span className="text-yellow-300">IQ</span></div>
+        <nav className="ml-auto flex gap-2 text-sm">
+          <a className="px-2 py-1 rounded bg-white/10" href="#">Program</a>
+          <a className="px-2 py-1 rounded bg-white/10" href="#">Sonuçlar</a>
+        </nav>
+      </div>
+      <div className="bg-black/40 text-xs text-blue-200">
+        <div className="mx-auto max-w-[1200px] px-6 py-1">
+          ${(tickerItems && tickerItems.length) ? tickerItems.join(" • ") : "Canlı veri hazırlanıyor..."}
+        </div>
+      </div>
+    </header>
+  `;
+}
+
+function ProgramTable({rows, title}){
+  return html`
+    <div className="glass">
+      <div className="px-4 py-3 border-b divider flex justify-between">
+        <div className="font-semibold">${title}</div>
+        <div className="text-xs text-white/60">${rows.length} kayıt</div>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead className="text-white/70">
+            <tr><th className="px-3 py-2">Hipodrom</th><th className="px-3 py-2">Koşu</th><th className="px-3 py-2">Mesafe</th><th className="px-3 py-2">Tip</th><th className="px-3 py-2">Saat</th></tr>
+          </thead>
+          <tbody>
+            ${rows.map(r => html`<tr className="border-t divider hover:bg-white/5">
+              <td className="px-3 py-2">${r.hippodrome ?? '-'}</td>
+              <td className="px-3 py-2">${r.race_no ?? '-'}</td>
+              <td className="px-3 py-2">${r.distance ?? '-'}</td>
+              <td className="px-3 py-2">${r.type ?? '-'}</td>
+              <td className="px-3 py-2">${r.start_time ?? '-'}</td>
+            </tr>`)}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function FooterStrip(){ return html`
+  <footer className="mt-6">
+    <div className="mx-auto max-w-[1200px] px-6">
+      <div className="flex items-center justify-between text-xs text-white/60 py-4">
+        <div>© ${new Date().getFullYear()} Ganyaniq Engine</div>
+        <div className="flex gap-3">
+          <a href="#" className="px-2 py-1 rounded bg-white/10">YouTube</a>
+          <a href="#" className="px-2 py-1 rounded bg-white/10">X</a>
+          <a href="#" className="px-2 py-1 rounded bg-white/10">Instagram</a>
+        </div>
+      </div>
+    </div>
+  </footer>`; }
+
+function App(){
+  const [prog,setProg] = React.useState([]);
+  const [resu,setResu] = React.useState([]);
+  const [err,setErr]   = React.useState(null);
+
+  async function load(){
+    try{
+      setErr(null);
+      const today = new Date().toISOString().slice(0,10);
+      const p = await fetchJSON(`${API_BASE}/api/program-lite?day=${today}`);
+      const r = await fetchJSON(`${API_BASE}/api/results-lite?day=${today}`);
+      setProg(Array.isArray(p.rows)? p.rows: []);
+      setResu(Array.isArray(r.rows)? r.rows: []);
+    }catch(e){
+      console.error("API error", e);
+      setErr(`Backend’e ulaşılamıyor: ${API_BASE}`);
+    }
+  }
+  React.useEffect(()=>{ load(); }, []);
+  useInterval(()=> load(), 5000);
+
+  const tickerItems = prog.slice(0,10).map(r => `${r.hippodrome||'-'} • ${r.race_no||'?'} • ${r.start_time||'-'}`);
+
+  return html`
+    <div className="page">
+      <aside className="ad-gutter pt-4 hidden xl:flex"><div className="ad-slot"></div></aside>
+      <main className="px-6">
+        <${Header} tickerItems=${tickerItems} />
+        ${err ? html`<div className="mx-auto max-w-[1200px] px-6 mt-4 warn">
+          ${err}. Değiştirmek için:
+          <code>localStorage.setItem("GANYANIQ_API","http://IP:PORT"); location.reload();</code>
+        </div>` : null}
+        <section className="mx-auto max-w-[1200px] my-6 grid grid-cols-1 gap-6">
+          <${ProgramTable} rows=${prog} title="Yarış Programı" />
+          <${ProgramTable} rows=${resu} title="Yarış Sonuçları" />
+        </section>
+        <${FooterStrip} />
+      </main>
+      <aside className="ad-gutter pt-4 hidden xl:flex"><div className="ad-slot"></div></aside>
+    </div>
+  `;
+}
+
+ReactDOM.createRoot(document.getElementById("app")).render(React.createElement(App));
+</script>
+</body>
+</html>
