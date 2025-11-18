@@ -34,7 +34,8 @@ const html = htm.bind(h);
 function resolveApiBase(){
   const saved = localStorage.getItem("GANYANIQ_API");
   if (saved) return saved;
-  const def = "http://127.0.0.1:10123";
+  // Use current origin for API calls (backend serves on same domain with /api prefix)
+  const def = window.location.origin;
   localStorage.setItem("GANYANIQ_API", def);
   return def;
 }
