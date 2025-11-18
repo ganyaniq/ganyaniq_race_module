@@ -1,0 +1,26 @@
+[
+  {
+    "day": "2025-11-10",
+    "hippodrome": "İstanbul",
+    "race_no": 1,
+    "distance": "1400m",
+    "type": "Kum",
+    "start_time": "12:30"
+  },
+  {
+    "day": "2025-11-10",
+    "hippodrome": "İstanbul",
+    "race_no": 2,
+    "distance": "1600m",
+    "type": "Çim",
+    "start_time": "13:00"
+  },
+  {
+    "day": "2025-11-10",
+    "hippodrome": "Ankara",
+    "race_no": 1,
+    "distance": "1200m",
+    "type": "Kum",
+    "start_time": "14:15"
+  }
+]
