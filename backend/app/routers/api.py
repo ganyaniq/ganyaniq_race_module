@@ -127,25 +127,30 @@ async def api_health():
 @router.get("/api/predictions")
 async def get_predictions(day: str | None = None):
     """Get Alfonso AI predictions for a day"""
-    from app.services.prediction_service import prediction_service
+    from app.ai.alfonso import alfonso_ai
     
     day_iso = _d2iso(day)
     
+    # Get race program
     try:
-        # Try to get from database first
-        prediction_data = await db_service.db.predictions.find_one({"date": day_iso})
+        db_data = await db_service.get_race_program(day_iso)
+        if not db_data or "races" not in db_data:
+            return {"ok": True, "day": day_iso, "predictions": [], "message": "Yarış programı bulunamadı"}
         
-        if prediction_data:
-            return {"ok": True, "day": day_iso, "predictions": prediction_data.get("predictions", [])}
+        races = db_data["races"][:3]  # Only first 3 races to save credits
+        predictions = []
         
-        # Generate new predictions
-        predictions = await prediction_service.generate_daily_predictions(day_iso)
+        for race in races:
+            try:
+                pred = await alfonso_ai.analyze_race(race)
+                predictions.append(pred)
+            except Exception as e:
+                print(f"[Alfonso] Error: {e}")
         
-        return {"ok": True, "day": day_iso, "predictions": predictions}
+        return {"ok": True, "day": day_iso, "predictions": predictions, "count": len(predictions)}
     except Exception as e:
         print(f"[API] Prediction error: {e}")
-        # Return empty predictions on error
-        return {"ok": True, "day": day_iso, "predictions": [], "error": "Tahminler şu anda oluşturulamıyor"}
+        return {"ok": True, "day": day_iso, "predictions": [], "error": str(e)}
 
 @router.post("/api/predictions/generate")
 async def generate_predictions(day: str | None = None):
