@@ -106,7 +106,40 @@ async def probables(day: str | None = None):
 @router.get("/weather")
 async def weather():
     """Get weather and track conditions"""
-    return {"ok": True, "stamp": datetime.now().isoformat(), "data": []}
+    from app.services.additional_data_service import additional_data_service
+    conditions = additional_data_service.get_weather_conditions()
+    return {"ok": True, "stamp": datetime.now().isoformat(), "data": conditions}
+
+@router.get("/api/weather")
+async def api_weather():
+    """Get weather (API route)"""
+    from app.services.additional_data_service import additional_data_service
+    conditions = additional_data_service.get_weather_conditions()
+    return {"ok": True, "data": conditions}
+
+@router.get("/api/news")
+async def api_news():
+    """Get news"""
+    from app.services.additional_data_service import additional_data_service
+    news = additional_data_service.get_news()
+    return {"ok": True, "data": news}
+
+@router.get("/api/stats")
+async def api_stats():
+    """Get statistics"""
+    from app.services.additional_data_service import additional_data_service
+    stats = additional_data_service.get_statistics()
+    return {"ok": True, "data": stats}
+
+@router.get("/api/probables-odds")
+async def api_probables_odds(day: str | None = None):
+    """Get probable odds"""
+    from app.services.additional_data_service import additional_data_service
+    from datetime import datetime
+    day_iso = _d2iso(day)
+    target_date = datetime.fromisoformat(day_iso).date()
+    probables = additional_data_service.get_probables(target_date)
+    return {"ok": True, "day": day_iso, "data": probables}
 
 @router.get("/entities/horse")
 async def entity_horse(name: str):
