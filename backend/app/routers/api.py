@@ -176,6 +176,51 @@ async def refresh_data(day: str | None = None):
         "message": "Data refreshed from TJK"
     }
 
+@router.get("/api/mick-surprises")
+async def mick_surprises(day: str | None = None):
+    """Mick AI - Sürpriz atlar"""
+    from app.ai.mick import mick_ai
+    day_iso = _d2iso(day)
+    
+    try:
+        db_data = await db_service.get_race_program(day_iso)
+        if db_data and "races" in db_data:
+            surprises = await mick_ai.find_surprise_horses(db_data["races"])
+            return {"ok": True, "day": day_iso, "surprises": surprises}
+    except:
+        pass
+    
+    return {"ok": True, "day": day_iso, "surprises": []}
+
+@router.get("/api/arion-insights")
+async def arion_insights(day: str | None = None):
+    """Arion AI - İçgörüler"""
+    from app.ai.arion import arion_ai
+    day_iso = _d2iso(day)
+    
+    try:
+        db_data = await db_service.get_race_program(day_iso)
+        if db_data and "races" in db_data:
+            insights = await arion_ai.generate_insights(db_data["races"])
+            return {"ok": True, "day": day_iso, "insights": insights}
+    except:
+        pass
+    
+    return {"ok": True, "day": day_iso, "insights": []}
+
+@router.get("/api/hermes-notifications")
+async def hermes_notifications():
+    """Hermes AI - Bildirimler"""
+    from app.ai.hermes import hermes_ai
+    
+    try:
+        notifications = await hermes_ai.generate_notifications()
+        return {"ok": True, "notifications": notifications}
+    except:
+        pass
+    
+    return {"ok": True, "notifications": []}
+
 @router.get("/entities/horse")
 async def entity_horse(name: str):
     """Get horse details"""
