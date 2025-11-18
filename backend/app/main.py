@@ -64,12 +64,12 @@ if web_dir.exists():
     if static_dir.exists():
         app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
     
-    # Serve index.html at root
+    # Serve Ganyaniq UI at root
     @app.get("/")
     async def serve_ui():
-        index_path = web_dir / "index.html"
-        if index_path.exists():
-            return FileResponse(str(index_path))
+        ui_path = web_dir / "ganyaniq.html"
+        if ui_path.exists():
+            return FileResponse(str(ui_path))
         return {"message": "Ganyaniq Backend - Web UI not found"}
 
 @app.get("/health")
