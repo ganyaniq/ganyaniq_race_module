@@ -25,15 +25,16 @@ async def lifespan(app: FastAPI):
     # Startup
     await db_service.connect()
     
-    # Start background scraper jobs
-    start_jobs(SCRAPER_JOBS)
-    print("[App] Started background scraper jobs")
+    # DISABLED: Background scraper jobs (causing performance issues)
+    # start_jobs(SCRAPER_JOBS)
+    # print("[App] Started background scraper jobs")
     
-    # Run initial scrape
-    print("[App] Running initial data scrape...")
-    run_daily_program_scraper()
+    # DISABLED: Initial scrape (causing startup delay)
+    # print("[App] Running initial data scrape...")
+    # run_daily_program_scraper()
     
     print("[App] Ganyaniq Backend started successfully!")
+    print("[App] Background jobs DISABLED for performance")
     
     yield
     
