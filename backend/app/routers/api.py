@@ -20,20 +20,32 @@ def _d2iso(d: str | None) -> str:
 @router.get("/api/program-lite")
 async def program_lite(day: str | None = None):
     """Get race program (lite version for UI)"""
+    from app.services.data_service import data_service
+    from datetime import datetime
+    
     day_iso = _d2iso(day)
+    target_date = datetime.fromisoformat(day_iso).date()
     
     # Try database first
     try:
         db_data = await db_service.get_race_program(day_iso)
         if db_data and "races" in db_data:
-            return {"day": day_iso, "rows": db_data["races"]}
-    except Exception as e:
-        print(f"[API] Database error: {e}")
+            return {"day": day_iso, "rows": db_data["races"], "source": "database"}
+    except:
+        pass
     
-    # Fallback to sample data
+    # Refresh from live source
+    try:
+        races = await data_service.refresh_daily_program(target_date)
+        if races:
+            return {"day": day_iso, "rows": races, "source": "live"}
+    except:
+        pass
+    
+    # Fallback to sample
     sample_data = read_json("sample_program.json", [])
     rows = [r for r in sample_data if r.get("day") == day_iso]
-    return {"day": day_iso, "rows": rows}
+    return {"day": day_iso, "rows": rows, "source": "sample"}
 
 @router.get("/api/results-lite")
 async def results_lite(day: str | None = None):
