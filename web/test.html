@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GANYAN IQ Test Sayfası</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #0b0f14;
+            color: #e8eefb;
+        }
+        .container {
+            background: rgba(18,24,34,0.7);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        h1 { color: #fbbf24; }
+        .status { padding: 10px; border-radius: 8px; margin: 10px 0; }
+        .success { background: #065f46; }
+        .error { background: #7f1d1d; }
+        button {
+            background: #fbbf24;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #f59e0b; }
+        pre {
+            background: #000;
+            padding: 10px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🏇 GANYAN IQ - Test Sayfası</h1>
+    
+    <div class="container">
+        <h2>Backend Durumu</h2>
+        <div id="status">Kontrol ediliyor...</div>
+        <button onclick="testBackend()">Backend Test Et</button>
+        <button onclick="testProgram()">Yarış Programı Al</button>
+        <button onclick="testPredictions()">Alfonso AI Tahminleri</button>
+    </div>
+
+    <div class="container">
+        <h2>Sonuçlar</h2>
+        <pre id="result">Henüz test yapılmadı</pre>
+    </div>
+
+    <script>
+        const API_URL = 'https://29979c87-7fb3-41d1-b125-3c81a754a64f.preview.emergentagent.com/api';
+        
+        async function testBackend() {
+            try {
+                const res = await fetch(API_URL + '/health');
+                const data = await res.json();
+                document.getElementById('status').className = 'status success';
+                document.getElementById('status').innerHTML = '✅ Backend Çalışıyor!';
+                document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+            } catch (err) {
+                document.getElementById('status').className = 'status error';
+                document.getElementById('status').innerHTML = '❌ Backend Hatası: ' + err.message;
+            }
+        }
+        
+        async function testProgram() {
+            try {
+                const res = await fetch(API_URL + '/program-lite?day=2025-11-18');
+                const data = await res.json();
+                document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+            } catch (err) {
+                document.getElementById('result').textContent = 'Hata: ' + err.message;
+            }
+        }
+        
+        async function testPredictions() {
+            document.getElementById('result').textContent = 'Alfonso AI tahminleri oluşturuluyor... (10-15 saniye sürebilir)';
+            try {
+                const res = await fetch(API_URL + '/predictions?day=2025-11-18');
+                const data = await res.json();
+                document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+            } catch (err) {
+                document.getElementById('result').textContent = 'Hata: ' + err.message;
+            }
+        }
+        
+        // Otomatik test
+        window.onload = () => testBackend();
+    </script>
+</body>
+</html>
