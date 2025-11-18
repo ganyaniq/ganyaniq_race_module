@@ -11,12 +11,36 @@ class TJKRealScraper:
     
     def __init__(self):
         self.base_url = "https://www.tjk.org"
+        self.session = None
         self.headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-            'Accept': 'application/json, text/html',
-            'Accept-Language': 'tr-TR,tr;q=0.9',
-            'Referer': 'https://www.tjk.org/TR/YarisSever'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Language': 'tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Connection': 'keep-alive'
         }
+    
+    def _get_session(self):
+        """Ana sayfadan session oluştur (404 engeli için)"""
+        if self.session is None:
+            self.session = requests.Session()
+            self.session.headers.update(self.headers)
+            
+            try:
+                # 1. Ana sayfaya git (session/cookie al)
+                logger.info("[TJK Real] Ana sayfadan session alınıyor...")
+                home_response = self.session.get(self.base_url, timeout=10)
+                
+                if home_response.status_code == 200:
+                    logger.info("[TJK Real] Session başarılı!")
+                    # Referer'ı güncelle
+                    self.session.headers['Referer'] = self.base_url
+                else:
+                    logger.warning(f"[TJK Real] Home page status: {home_response.status_code}")
+            except Exception as e:
+                logger.error(f"[TJK Real] Session error: {e}")
+        
+        return self.session
     
     def get_daily_program(self, target_date=None):
         """Günlük yarış programını çek"""
@@ -24,12 +48,15 @@ class TJKRealScraper:
             target_date = date.today()
         
         try:
-            # TJK API endpoint
+            # Session al (ana sayfadan)
+            session = self._get_session()
+            
+            # 2. Alt sayfaya git
             url = f"{self.base_url}/TR/YarisSever/Query/Page/GunlukYarisProgrami"
             
             logger.info(f"[TJK Real] Fetching program for {target_date}")
             
-            response = requests.get(url, headers=self.headers, timeout=10)
+            response = session.get(url, timeout=10)
             
             if response.status_code == 200:
                 races = self._parse_program(response.text, target_date)
