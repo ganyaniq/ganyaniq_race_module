@@ -1,5 +1,6 @@
 import logging
 from datetime import date
+from app.scrapers.tjk_real_scraper import tjk_real_scraper
 from app.scrapers.tjk_live_scraper import tjk_live
 from app.services.db_service import db_service
 
@@ -10,11 +11,17 @@ class DataService:
         if not target_date:
             target_date = date.today()
         
-        races = tjk_live.get_daily_program(target_date)
+        # Try real TJK first
+        races = tjk_real_scraper.get_daily_program(target_date)
+        
+        # Fallback to generated data if real scraping fails
+        if not races or len(races) == 0:
+            logger.info("[DataService] Real scraping failed, using fallback")
+            races = tjk_live.get_daily_program(target_date)
         
         if races:
             await db_service.save_race_program(target_date.isoformat(), races)
-            logger.info(f"Refreshed program: {len(races)} races")
+            logger.info(f"[DataService] Saved {len(races)} races")
             return races
         return []
     
@@ -22,11 +29,17 @@ class DataService:
         if not target_date:
             target_date = date.today()
         
-        results = tjk_live.get_daily_results(target_date)
+        # Try real TJK first
+        results = tjk_real_scraper.get_daily_results(target_date)
+        
+        # Fallback to generated data
+        if not results or len(results) == 0:
+            logger.info("[DataService] Real results failed, using fallback")
+            results = tjk_live.get_daily_results(target_date)
         
         if results:
             await db_service.save_race_results(target_date.isoformat(), results)
-            logger.info(f"Refreshed results: {len(results)} results")
+            logger.info(f"[DataService] Saved {len(results)} results")
             return results
         return []
 
