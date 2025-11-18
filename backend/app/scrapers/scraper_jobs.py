@@ -2,7 +2,8 @@ from __future__ import annotations
 import logging
 from datetime import date, datetime, timedelta
 import asyncio
-from app.scrapers.tjk_scraper import tjk_scraper
+from app.scrapers.tjk_advanced_scraper import tjk_advanced_scraper
+from app.scrapers.ganyancanavari_scraper import ganyancanavari_scraper
 from app.services.db_service import db_service
 
 logger = logging.getLogger(__name__)
