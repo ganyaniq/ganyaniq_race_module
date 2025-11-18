@@ -92,3 +92,32 @@ async def entity_jockey(name: str):
 async def api_health():
     """Health check endpoint"""
     return {"ok": True, "status": "healthy", "timestamp": datetime.now().isoformat()}
+
+# Alfonso AI Predictions
+@router.get("/api/predictions")
+async def get_predictions(day: str | None = None):
+    """Get Alfonso AI predictions for a day"""
+    from app.services.prediction_service import prediction_service
+    
+    day_iso = _d2iso(day)
+    
+    # Try to get from database first
+    prediction_data = await db_service.db.predictions.find_one({\"date\": day_iso})
+    
+    if prediction_data:
+        return {\"ok\": True, \"day\": day_iso, \"predictions\": prediction_data.get(\"predictions\", [])}
+    
+    # Generate new predictions
+    predictions = await prediction_service.generate_daily_predictions(day_iso)
+    
+    return {\"ok\": True, \"day\": day_iso, \"predictions\": predictions}
+
+@router.post("/api/predictions/generate")
+async def generate_predictions(day: str | None = None):
+    \"\"\"Force generate new predictions\"\"\"
+    from app.services.prediction_service import prediction_service
+    
+    day_iso = _d2iso(day)
+    predictions = await prediction_service.generate_daily_predictions(day_iso)
+    
+    return {\"ok\": True, \"day\": day_iso, \"generated\": len(predictions), \"predictions\": predictions}
