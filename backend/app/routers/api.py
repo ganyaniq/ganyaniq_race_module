@@ -88,7 +88,7 @@ async def entity_jockey(name: str):
     """Get jockey details"""
     return {"ok": True, "name": name, "data": {}}
 
-@router.get("/health")
-async def health():
+@router.get("/api/health")
+async def api_health():
     """Health check endpoint"""
     return {"ok": True, "status": "healthy", "timestamp": datetime.now().isoformat()}
