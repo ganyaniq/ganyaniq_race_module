@@ -15,7 +15,7 @@ def run_daily_program_scraper():
         
         # Scrape today's program
         today = date.today()
-        races = tjk_scraper.scrape_daily_program(today)
+        races = tjk_advanced_scraper.scrape_daily_program(today)
         
         if races:
             # Save to database (using asyncio for async function)
