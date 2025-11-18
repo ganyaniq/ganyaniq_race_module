@@ -21,31 +21,45 @@ def _d2iso(d: str | None) -> str:
 async def program_lite(day: str | None = None):
     """Get race program (lite version for UI)"""
     from app.services.data_service import data_service
+    from app.libs.cache import cache
     from datetime import datetime
     
     day_iso = _d2iso(day)
+    
+    # Check cache first (5 min)
+    cache_key = f"program_{day_iso}"
+    cached = cache.get(cache_key)
+    if cached:
+        return cached
+    
     target_date = datetime.fromisoformat(day_iso).date()
     
-    # Try database first
+    # Try database
     try:
         db_data = await db_service.get_race_program(day_iso)
         if db_data and "races" in db_data:
-            return {"day": day_iso, "rows": db_data["races"], "source": "database"}
+            result = {"day": day_iso, "rows": db_data["races"], "source": "database"}
+            cache.set(cache_key, result)
+            return result
     except:
         pass
     
-    # Refresh from live source
+    # Refresh from live
     try:
         races = await data_service.refresh_daily_program(target_date)
         if races:
-            return {"day": day_iso, "rows": races, "source": "live"}
+            result = {"day": day_iso, "rows": races, "source": "live"}
+            cache.set(cache_key, result)
+            return result
     except:
         pass
     
-    # Fallback to sample
+    # Fallback
     sample_data = read_json("sample_program.json", [])
     rows = [r for r in sample_data if r.get("day") == day_iso]
-    return {"day": day_iso, "rows": rows, "source": "sample"}
+    result = {"day": day_iso, "rows": rows, "source": "sample"}
+    cache.set(cache_key, result, 60)
+    return result
 
 @router.get("/api/results-lite")
 async def results_lite(day: str | None = None):
