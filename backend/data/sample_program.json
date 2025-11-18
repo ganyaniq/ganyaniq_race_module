@@ -30,5 +30,13 @@
     "distance": "1800m",
     "type": "Çim",
     "start_time": "15:00"
+  },
+  {
+    "day": "2025-11-18",
+    "hippodrome": "Bursa",
+    "race_no": 1,
+    "distance": "1600m",
+    "type": "Kum",
+    "start_time": "16:30"
   }
 ]
