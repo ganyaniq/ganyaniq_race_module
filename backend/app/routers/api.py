@@ -221,6 +221,75 @@ async def hermes_notifications():
     
     return {"ok": True, "notifications": []}
 
+@router.get("/api/lyra-charts")
+async def lyra_charts(day: str | None = None):
+    """Lyra AI - Grafik verileri"""
+    from app.ai.lyra import lyra_ai
+    day_iso = _d2iso(day)
+    
+    try:
+        db_data = await db_service.get_race_program(day_iso)
+        if db_data and "races" in db_data:
+            charts = await lyra_ai.generate_chart_data(db_data["races"])
+            return {"ok": True, "day": day_iso, "charts": charts}
+    except:
+        pass
+    
+    return {"ok": True, "day": day_iso, "charts": []}
+
+@router.get("/api/lyra-trends")
+async def lyra_trends(horse_id: str | None = None):
+    """Lyra AI - Performans trendleri"""
+    from app.ai.lyra import lyra_ai
+    
+    try:
+        trend = await lyra_ai.get_performance_trends(horse_id)
+        return {"ok": True, "trend": trend}
+    except:
+        pass
+    
+    return {"ok": True, "trend": {}}
+
+@router.get("/api/gc-declarations")
+async def gc_declarations():
+    """Ganyancanavari - Deklareler"""
+    from app.scrapers.ganyancanavari_scraper import ganyancanavari_scraper
+    
+    declarations = ganyancanavari_scraper.get_declarations()
+    return {"ok": True, "data": declarations}
+
+@router.get("/api/gc-workouts")
+async def gc_workouts():
+    """Ganyancanavari - Galoplar"""
+    from app.scrapers.ganyancanavari_scraper import ganyancanavari_scraper
+    
+    workouts = ganyancanavari_scraper.get_workouts()
+    return {"ok": True, "data": workouts}
+
+@router.get("/api/admin/stats")
+async def admin_stats():
+    """Admin - Sistem istatistikleri"""
+    from app.services.admin_service import admin_service
+    
+    stats = await admin_service.get_system_stats()
+    return {"ok": True, "stats": stats}
+
+@router.post("/api/admin/clear-cache")
+async def admin_clear_cache():
+    """Admin - Cache temizle"""
+    from app.services.admin_service import admin_service
+    
+    result = await admin_service.clear_cache()
+    return result
+
+@router.get("/api/admin/logs")
+async def admin_logs(limit: int = 50):
+    """Admin - Log kayıtları"""
+    from app.services.admin_service import admin_service
+    
+    logs = await admin_service.get_recent_logs(limit)
+    return {"ok": True, "logs": logs}
+
 @router.get("/entities/horse")
 async def entity_horse(name: str):
     """Get horse details"""
