@@ -141,6 +141,27 @@ async def api_probables_odds(day: str | None = None):
     probables = additional_data_service.get_probables(target_date)
     return {"ok": True, "day": day_iso, "data": probables}
 
+@router.post("/api/refresh-data")
+async def refresh_data(day: str | None = None):
+    """Force refresh data from TJK"""
+    from app.services.data_service import data_service
+    from datetime import datetime
+    
+    day_iso = _d2iso(day)
+    target_date = datetime.fromisoformat(day_iso).date()
+    
+    # Refresh program and results
+    program = await data_service.refresh_daily_program(target_date)
+    results = await data_service.refresh_daily_results(target_date)
+    
+    return {
+        "ok": True,
+        "day": day_iso,
+        "program_count": len(program),
+        "results_count": len(results),
+        "message": "Data refreshed from TJK"
+    }
+
 @router.get("/entities/horse")
 async def entity_horse(name: str):
     """Get horse details"""
