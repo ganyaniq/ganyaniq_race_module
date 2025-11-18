@@ -119,6 +119,54 @@ export default function Index() {
       </View>
 
       <View style={styles.section}>
+        <Text style={styles.sectionTitle}>🎯 Mick AI - Sürpriz Atlar</Text>
+        {mickSurprises.slice(0, 2).map((surprise, i) => (
+          <View key={i} style={styles.predCard}>
+            <View style={styles.predHeader}>
+              <Text style={styles.predTitle}>{surprise.race_info?.hippodrome} - Koşu {surprise.race_info?.race_no}</Text>
+              <View style={[styles.badge, {backgroundColor: 'rgba(239,68,68,0.2)'}]}>
+                <Text style={[styles.badgeText, {color: '#ef4444'}]}>{surprise.risk_level}</Text>
+              </View>
+            </View>
+            <View style={styles.predItem}>
+              <View style={[styles.horseNumber, {backgroundColor: '#ef4444'}]}>
+                <Text style={styles.horseNumberText}>{surprise.surprise_horse}</Text>
+              </View>
+              <View style={styles.predInfo}>
+                <Text style={styles.predRank}>💎 Sürpriz At Adayı</Text>
+                <Text style={styles.predReason}>{surprise.reasoning}</Text>
+                <Text style={styles.predConfidence}>Tahmini Oran: {surprise.odds_estimate}</Text>
+              </View>
+            </View>
+          </View>
+        ))}
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>💡 Arion AI - İçgörüler</Text>
+        {arionInsights.slice(0, 2).map((insight, i) => (
+          <View key={i} style={styles.resultCard}>
+            <View style={styles.resultHeader}>
+              <Text style={styles.resultHippo}>{insight.race_info?.hippodrome}</Text>
+              <Text style={[styles.badge, {fontSize: 10}]}>{insight.category}</Text>
+            </View>
+            <Text style={[styles.resultText, {marginTop: 8}]}>{insight.insight}</Text>
+            <Text style={[styles.ganyan, {marginTop: 4}]}>Güven: {insight.confidence}</Text>
+          </View>
+        ))}
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>📢 Hermes AI - Bildirimler</Text>
+        {hermesNotifications.slice(0, 3).map((notif, i) => (
+          <View key={i} style={[styles.resultCard, {borderLeftWidth: 3, borderLeftColor: notif.priority === 'high' ? '#ef4444' : '#fbbf24'}]}>
+            <Text style={[styles.resultHippo, {fontSize: 14}]}>{notif.title}</Text>
+            <Text style={[styles.resultText, {marginTop: 4}]}>{notif.message}</Text>
+          </View>
+        ))}
+      </View>
+
+      <View style={styles.section}>
         <Text style={styles.sectionTitle}>🏆 Sonuçlar</Text>
         {results.map((result, i) => (
           <View key={i} style={styles.resultCard}>
