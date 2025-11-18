@@ -34,7 +34,7 @@ def run_daily_results_scraper():
         
         # Scrape today's results
         today = date.today()
-        results = tjk_scraper.scrape_daily_results(today)
+        results = tjk_advanced_scraper.scrape_daily_results(today)
         
         if results:
             # Save to database
