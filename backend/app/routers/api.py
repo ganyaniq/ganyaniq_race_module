@@ -23,9 +23,12 @@ async def program_lite(day: str | None = None):
     day_iso = _d2iso(day)
     
     # Try database first
-    db_data = await db_service.get_race_program(day_iso)
-    if db_data and "races" in db_data:
-        return {"day": day_iso, "rows": db_data["races"]}
+    try:
+        db_data = await db_service.get_race_program(day_iso)
+        if db_data and "races" in db_data:
+            return {"day": day_iso, "rows": db_data["races"]}
+    except Exception as e:
+        print(f"[API] Database error: {e}")
     
     # Fallback to sample data
     sample_data = read_json("sample_program.json", [])
