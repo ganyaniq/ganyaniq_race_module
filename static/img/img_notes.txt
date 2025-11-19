@@ -1,6 +1,0 @@
-
-/static/img/ klasörüne eklenecek dosyalar:
-- logo.png
-- alfonso_banner.png (540x240px)
-- surpriz_at_banner.png (540x220px)
-- sosyal medya paylaşımları için: social_share.png, reels_kapak.jpg (isteğe bağlı)
